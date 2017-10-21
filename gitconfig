@@ -1,0 +1,9 @@
+[user]
+	email = anohin56@gmail.com
+	name = SumLare
+[core]
+	editor = vim
+[color]
+	ui = true
+[credential]
+	helper = store
