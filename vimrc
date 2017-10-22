@@ -3,7 +3,7 @@ set encoding=utf-8
 
 syntax on
 
-set nocompatible
+set nocp
 filetype off
 
 " set the runtime path to include Vundle and initialize
@@ -46,6 +46,7 @@ set nofoldenable
 set clipboard=unnamed
 " Enhance command-line completion
 set wildmenu
+set nowrap
 
 " Auto-reload buffers when files are changed on disk
 set autoread
@@ -55,6 +56,7 @@ set tabstop=2 shiftwidth=2      " a tab is two spaces
 set expandtab                   " use spaces, not tabs
 set backspace=indent,eol,start  " backspace through everything in insert mode
 
+" set dark background and color scheme
 set background=dark
 colorscheme railscasts
 
@@ -84,10 +86,34 @@ inoremap <s-tab> <c-n>
 au BufEnter *.rb syn match error contained "\<binding.pry\>"
 au BufEnter *.rb syn match error contained "\<debugger\>"
 
+" hightlight line longer than 80 characters
 highlight OverLength ctermbg=red ctermfg=white guibg=#592929
 match OverLength /\%81v.\+/
 
-" Powerline
+" highlight trailing spaces in annoying red
+highlight ExtraWhitespace ctermbg=1 guibg=red
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
+
+" trim whitespaces on write
+function! TrimWhiteSpace()
+	%s/\s\+$//e
+endfunction
+autocmd BufWritePre     * :call TrimWhiteSpace()
+
+" autocomplete brackets and quotes
+ino " ""<left>
+ino ' ''<left>
+ino ( ()<left>
+ino [ []<left>
+ino { {}<left>
+ino {<CR> {<CR>}<ESC>O
+ino {;<CR> {<CR>};<ESC>O
+
+" powerline configuration
 set guifont=Inconsolata\ for\ Powerline:h15
 let g:Powerline_symbols = 'fancy'
 set encoding=utf-8
@@ -95,3 +121,5 @@ set t_Co=256
 set fillchars+=stl:\ ,stlnc:\
 set term=xterm-256color
 set termencoding=utf-8
+
+highlight Visual       ctermbg=3   ctermfg=1
