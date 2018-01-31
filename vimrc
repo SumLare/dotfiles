@@ -123,3 +123,5 @@ set term=xterm-256color
 set termencoding=utf-8
 
 highlight Visual       ctermbg=3   ctermfg=1
+highlight Search ctermfg=yellow
+hi Normal     ctermbg=235
