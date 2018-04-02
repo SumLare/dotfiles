@@ -33,5 +33,5 @@ brew cask install google-chrome
 # TODO: Install powerline
 
 # Ruby
-rbenv install 2.4.2
-gem install bundler rails
+rbenv install 2.5.1
+gem install bundler mina
