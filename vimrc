@@ -1,33 +1,32 @@
-" .vimrc
-set encoding=utf-8
-
-syntax on
-
-set nocompatible
-filetype off
-
+" ============================================================
+" Plugins
+" ============================================================
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-
-" let Vundle manage Vundle, required
 Plugin 'gmarik/Vundle.vim'
 
 Plugin 'tpope/vim-rails'
 Plugin 'vim-airline/vim-airline'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'nightsense/snow'
+Plugin 'morhetz/gruvbox'
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
 Plugin 'ervandew/supertab'
+Plugin 'mhinz/vim-signify'
 Plugin 'scrooloose/nerdtree'
 Plugin 'ekalinin/Dockerfile.vim'
-Plugin 'slim-template/vim-slim.git'
-Plugin 'fatih/vim-go'
-Plugin 'davidhalter/jedi-vim'
-Plugin 'mdempsky/gocode', {'rtp': 'vim/'}
+Plugin 'ludovicchabant/vim-gutentags'
+Plugin 'w0rp/ale'
+Plugin 'lepture/vim-jinja'
 call vundle#end()
 
+" ============================================================
+" Default settings
+" ============================================================
+set encoding=utf-8
+syn enable
+set nocompatible
 set autoindent
 set showmatch
 set vb
@@ -47,30 +46,46 @@ set clipboard=unnamed
 set wildmenu
 set nowrap
 set noswapfile
-
-" Search down into subfolders
-set path+=**
+set autoread                    " Auto-reload buffers when files are changed on disk
+set tabstop=2 shiftwidth=2      " a tab is two spaces
+set expandtab                   " use spaces, not tabs
+set backspace=indent,eol,start  " backspace through everything in insert mode
+set path+=**                    " Search down into subfolders
 
 " Create the `tags` file
 command! MakeTags !ctags -R .
 
-" Auto-reload buffers when files are changed on disk
-set autoread
+" ============================================================
+" FileType specific changes
+" ============================================================
+filetype on        " Enable filetype detection
+filetype indent on " Enable filetype-specific indenting
+filetype plugin on " Enable filetype-specific plugins
 
-" Whitespace
-set tabstop=2 shiftwidth=2      " a tab is two spaces
-set expandtab                   " use spaces, not tabs
-set backspace=indent,eol,start  " backspace through everything in insert mode
+" Python
+au FileType python setlocal expandtab shiftwidth=4 tabstop=4 smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+"au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
+au FileType python set foldmethod=indent foldlevel=99
+" Ignore these files when completing
+set wildignore+=*.o,*.obj,.git,*.pyc
+set wildignore+=eggs/**
+set wildignore+=*.egg-info/**
 
-au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4 nolist
-
+" ============================================================
+" Highlighting
+" ============================================================
 " set dark background and color scheme
-colorscheme snow
+colorscheme gruvbox
 set background=dark
 
-" highlight trailing spaces in annoying red
-highlight ExtraWhitespace ctermbg=1 guibg=red
-match ExtraWhitespace /\s\+$/
+" highlight modes
+hi Visual ctermbg=16 ctermfg=11
+hi Search ctermfg=yellow
+hi Normal ctermbg=235
+
+" hightlight indentation
+au FileType sql setlocal ts=4 sts=4 sw=4
+au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4 nolist
 
 " highlight the status bar when in insert mode
 if version >= 700
@@ -78,6 +93,31 @@ if version >= 700
   au InsertLeave * hi StatusLine ctermbg=240 ctermfg=12
 endif
 
+" highlight trailing spaces in annoying red
+hi ExtraWhitespace ctermbg=1 guibg=red
+call matchadd('ExtraWhitespace', '\s\+$')
+au BufWinEnter * match ExtraWhitespace /\s\+$/
+au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+au InsertLeave * match ExtraWhitespace /\s\+$/
+
+" rake debugger statements visible
+hi Debug ctermbg=1 guibg=red
+call matchadd('Debug', 'breakpoint()')
+au BufEnter *.rb syn match error contained "\<binding.pry\>"
+au BufEnter *.rb syn match error contained "\<byebug\>"
+
+" airline configuration
+set t_Co=256
+set fillchars+=stl:\ ,stlnc:\
+set termencoding=utf-8
+let g:airline_theme = 'gruvbox'
+
+" Snippets
+let @g = "Obreakpoint()"
+
+" ============================================================
+" Functions
+" ============================================================
 " multi-purpose tab key (auto-complete)
 function! InsertTabWrapper()
   let col = col('.') - 1
@@ -89,53 +129,3 @@ function! InsertTabWrapper()
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <s-tab> <c-n>
-
-" Make those debugger statements painfully obvious
-au BufEnter *.rb syn match error contained "\<binding.pry\>"
-au BufEnter *.rb syn match error contained "\<debugger\>"
-
-" hightlight line longer than 80 characters
-highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-match OverLength /\%81v.\+/
-
-" highlight trailing spaces in annoying red
-highlight ExtraWhitespace ctermbg=1 guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
-
-" trim whitespaces on write
-"function! TrimWhiteSpace()
-"	%s/\s\+$//e
-"endfunction
-"autocmd BufWritePre     * :call TrimWhiteSpace()
-
-" powerline configuration
-set guifont=Inconsolata\ for\ Powerline:h15
-let g:Powerline_symbols = 'fancy'
-let g:powerline_pycmd = 'py3'
-set encoding=utf-8
-set t_Co=256
-set fillchars+=stl:\ ,stlnc:\
-"set term=xterm-256color
-set termencoding=utf-8
-
-highlight Visual       ctermbg=3   ctermfg=1
-highlight Search ctermfg=yellow
-hi Normal     ctermbg=235
-
-" golang stuff
-
-" use goimports for formatting
-let g:go_fmt_command = "goimports"
-
-" turn highlighting on
-let g:go_highlight_functions = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_structs = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_build_constraints = 1
-
-let g:syntastic_go_checkers = ['golint', 'errcheck']
