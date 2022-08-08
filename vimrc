@@ -6,19 +6,28 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 Plugin 'gmarik/Vundle.vim'
 
-Plugin 'tpope/vim-rails'
 Plugin 'vim-airline/vim-airline'
-Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'morhetz/gruvbox'
+
 Plugin 'tpope/vim-endwise'
 Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-surround'
+
 Plugin 'ervandew/supertab'
+Plugin 'davidhalter/jedi-vim'
 Plugin 'mhinz/vim-signify'
+Plugin 'vim-scripts/indentpython.vim'
 Plugin 'scrooloose/nerdtree'
+
 Plugin 'ekalinin/Dockerfile.vim'
-Plugin 'ludovicchabant/vim-gutentags'
-Plugin 'w0rp/ale'
 Plugin 'lepture/vim-jinja'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'nvie/vim-flake8'
+
+Plugin 'nvim-lua/popup.nvim'
+Plugin 'nvim-lua/plenary.nvim'
+Plugin 'nvim-telescope/telescope.nvim'
 call vundle#end()
 
 " ============================================================
@@ -53,7 +62,7 @@ set backspace=indent,eol,start  " backspace through everything in insert mode
 set path+=**                    " Search down into subfolders
 
 " Create the `tags` file
-command! MakeTags !ctags -R .
+" command! MakeTags !ctags -R .
 
 " ============================================================
 " FileType specific changes
@@ -66,6 +75,10 @@ filetype plugin on " Enable filetype-specific plugins
 au FileType python setlocal expandtab shiftwidth=4 tabstop=4 smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 "au BufRead *.py set efm=%C\ %.%#,%A\ \ File\ \"%f\"\\,\ line\ %l%.%#,%Z%[%^\ ]%\\@=%m
 au FileType python set foldmethod=indent foldlevel=99
+" Hightlight on yank
+" From https://neovim.io/news/2021/07
+au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=true}
+
 " Ignore these files when completing
 set wildignore+=*.o,*.obj,.git,*.pyc
 set wildignore+=eggs/**
@@ -115,6 +128,8 @@ let g:airline_theme = 'gruvbox'
 " Snippets
 let @g = "Obreakpoint()"
 
+let g:jedi#environment_path = "venv"
+
 " ============================================================
 " Functions
 " ============================================================
@@ -129,3 +144,7 @@ function! InsertTabWrapper()
 endfunction
 inoremap <tab> <c-r>=InsertTabWrapper()<cr>
 inoremap <s-tab> <c-n>
+
+" gfiles shortcut
+nnoremap <C-f> <cmd>Telescope find_files<cr>
+nnoremap <C-g> <cmd>Telescope git_files<cr>
