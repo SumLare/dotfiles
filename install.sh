@@ -26,6 +26,7 @@ brew install git
 brew install zsh
 brew install node
 brew install docker
+brew install neovim
 
 # Install apps with Cask
 echo "Installing apps with Cask..."
