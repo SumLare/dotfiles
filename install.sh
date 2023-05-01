@@ -26,10 +26,27 @@ brew install git
 brew install zsh
 brew install node
 brew install docker
+brew install fd
+brew install ripgrep
+brew install tmux
+brew install starship
+brew install jump
+
 
 # Install apps with Cask
 echo "Installing apps with Cask..."
 brew cask install iterm2
 brew cask install google-chrome
 
+
 # TODO: Install powerline
+
+# Install zpresto
+git clone --recursive https://github.com/sorin-ionescu/prezto.git "${ZDOTDIR:-$HOME}/.zprezto"
+
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+cp vimrc ~/.vimrc
+cp zshrc ~/.zshrc
