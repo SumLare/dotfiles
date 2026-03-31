@@ -39,7 +39,7 @@ vim.pack.add({
   { src = "https://github.com/nvim-lualine/lualine.nvim" },
   { src = "https://github.com/akinsho/bufferline.nvim" },
   { src = "https://github.com/folke/which-key.nvim" },
-  { src = "https://github.com/folke/snacks.nvim" },
+  { src = "https://github.com/nvim-telescope/telescope.nvim" },
 
   -- Mini
   { src = "https://github.com/echasnovski/mini.icons" },
@@ -189,8 +189,8 @@ require("mini.icons").setup()
 require("mini.pairs").setup()
 require("mini.ai").setup()
 
--- Snacks
-require("snacks").setup()
+-- Telescope
+require("telescope").setup()
 
 -- Persistence (sessions)
 require("persistence").setup()

@@ -52,3 +52,6 @@ map({ "i", "x", "n", "s" }, "<C-s>", "<cmd>w<cr><Esc>", { desc = "Save file" })
 
 -- Quit
 map("n", "<leader>qq", "<cmd>qa<cr>", { desc = "Quit all" })
+
+-- Telescope
+map("n", "<leader><leader>", "<cmd>Telescope find_files<cr>", { desc = "Find files" })
