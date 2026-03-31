@@ -5,8 +5,6 @@ set fish_greeting
 
 fish_add_path $HOME/bin
 
-alias dotfiles='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
-
 if status is-interactive
     starship init fish | source
 
